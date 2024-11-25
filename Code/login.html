@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        form {
+            border: 3px solid #f1f1f1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #1877f2;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            button:hover {
+                background-color: #166fe5;
+                transform: translateY(-2px);
+            }
+        
+
+        .cancelbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #1877f2;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .cancelbtn:hover {
+                background-color: #166fe5;
+                transform: translateY(-2px);
+            }
+
+        .imgcontainer {
+            text-align: center;
+            margin: 24px 0 12px 0;
+        }
+
+        img.avatar {
+            width: 40%;
+            border-radius: 50%;
+        }
+
+        .container {
+            padding: 16px;
+        }
+
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
+
+        @media screen and (max-width: 300px) {
+            span.psw {
+                display: block;
+                float: none;
+            }
+
+            .cancelbtn {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+    <h2>Login Form</h2>
+
+    <form name="myForm" action="https://127.0.0.1:8000/login" method="post">
+
+        <div class="container">
+            <label name="error"></label>
+            <label for="uname"><b>Login</b></label>
+            <input type="text" placeholder="Enter Username" name="login" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+            <button type="submit">Login</button>
+        </div>
+
+
+    </form>
+    <div>
+        <form action="https://127.0.0.1:8000/signUp" method="get">
+            <button style="background-color:#ff6347;" type="submit">SignUp</button>
+        </form>
+    </div>
+    <script type="text/javascript">
+
+ function sendLogin() {
+  let Login = document.forms["myForm"]["login"].value;
+  let password = document.forms["myForm"]["password"].value;
+
+    const Https = new XMLHttpRequest();
+    const url='https://127.0.0.1:8000/login';
+    Https.open("POST", url);
+    Https.send();
+}
+
+    </script>
+</body>
+</html>

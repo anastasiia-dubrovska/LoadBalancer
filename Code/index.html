@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="uk">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <title>Tasks Balancer</title>
+    <style>
+        #cb {
+            color: lightblue;
+        }
+
+        .p3 {
+            font-size: 20px;
+        }
+
+        p, h1 {
+            font-family: "Times New Roman";
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        body {
+            background-color: #eee;
+            color: #4e4544;
+            font: normal 16px sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            background-color: #fff;
+            margin: 0 auto;
+            padding: 0 60px;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            grid-template-areas:
+                "header header"
+                "main sidebar"
+                "footer footer";
+            grid-gap: 60px;
+        }
+
+        header {
+            grid-area: header;
+            color: #ef5350;
+            padding: 20px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+            header nav {
+                justify-self: start;
+                list-style: none;
+            }
+
+                header nav li {
+                    margin-right: 15px;
+                    display: inline-block;
+                    background-color: #1877f2;
+                }
+
+            header button {
+                justify-self: end;
+                background-color: #1877f2; 
+                padding: 10px 25px;
+                color: #fff;
+                cursor: pointer;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px; 
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+                header button:hover {
+                    background-color: #1877f2;
+                    transform: translateY(-2px);
+                }
+
+        body div {
+            justify-self: end;
+        }
+
+        .main {
+            grid-area: main;
+            text-align: center;
+        }
+
+            .main h2 {
+                font-size: 32px;
+                margin-bottom: 55px;
+            }
+
+            .main p {
+                margin-bottom: 50px;
+            }
+
+            .main img {
+                width: 100%;
+            }
+
+        .sidebar {
+            grid-area: sidebar;
+            border: 1px solid #a2a2a2;
+            padding: 20px;
+        }
+
+        footer {
+            grid-area: footer;
+            color: #ef5350;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            footer p {
+                color: #777;
+                font-size: 12px;
+                padding: 10px;
+            }
+
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "sidebar"
+                    "footer";
+            }
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            background-color: #fff;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <div class="container">
+
+
+        <header>
+
+            <nav>
+
+                <li><a href="/"><h1>Main</h1></a></li>
+
+
+                <li><a href="https://127.0.0.1:8000/panel">Panel</a></li>
+
+            </nav>
+            <div>
+                <form action="https://127.0.0.1:8000/exit" method="get">
+                    <button type="submit">exit</button>
+                </form>
+            </div>
+
+
+
+        </header>
+
+
+        <section class="main" ng-app="app" ng-controller="TodoController">
+
+            <h2>Exaltation in degree</h2>
+            <h1>Enter data</h1>
+
+            <form name="myForm" onsubmit="return validateForm()" action="https://127.0.0.1:8000/task" method="post">
+                <label>Number</label>
+                <input type="number" name="number" /><br><br>
+                <label>Power</label>
+                <input type="number" name="power" /><br><br>
+                <input type="submit" value="Send" />
+            </form>
+
+            <table>
+                <thead><tr><th>Id</th><th>number</th><th>power</th><th>result</th><th>progress</th><th>time</th><th></th></tr></thead>
+                <tbody>
+                    <tr ng-repeat="x in myData"><td>{{ x._id}}</td><td>{{ x.number}}</td><td>{{ x.power}}</td><td>{{ x.result}}</td><td>{{ x.progress}}%</td><td>{{ x.time}}s</td><td><button id={{x._id}} onclick="deleteTask(this)">delete</button></td></tr>
+                </tbody>
+            </table>
+
+
+
+        </section>
+
+
+
+
+
+        <footer>
+            <p>Author: Anastasia Dubrovska</p>
+
+        </footer>
+
+
+    </div>
+    <script>
+
+        var app = angular.module('app', []);
+        app.controller('TodoController', function ($scope, $http, $interval) {
+
+            $interval(updateData, 1000);
+
+            function updateData() {
+                $http.get("https://127.0.0.1:8000/tasks").then(function (response) {
+                    $scope.myData = response.data;
+                });
+            }
+            $scope.stopCalls = function () {
+                $interval.cancel(interval);
+            }
+
+        });
+        async function deleteTask(but) {
+            let id = { _id: but.id };
+            const Http = new XMLHttpRequest();
+            const url = 'https://127.0.0.1:8000/delete?id_task=' + String(but.id);
+            Http.open("POST", url);
+            Http.send();
+        }
+
+        function validateForm() {
+            let num = Number(document.forms["myForm"]["number"].value);
+            let pow = Number(document.forms["myForm"]["power"].value);
+            if (num == 0) {
+                alert("0^(any)=0");
+                return false;
+            }
+            else if (pow == 0) {
+                alert("(any)^0=1");
+                return false;
+            }
+            else if (pow == 1) {
+                alert("(any)^1=any");
+                return false;
+            }
+            else if (pow > 100) {
+                alert("power>100!");
+                return false;
+            }
+            else if (num > 1000) {
+                alert("number>1000!");
+                return false;
+            }
+        }
+    </script>
+    
+
+
+
+
+
+</body>
+
+</html>

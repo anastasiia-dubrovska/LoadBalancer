@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <style type="text/css">
+
+        table {
+            width: 80%;
+            margin: 50px auto;
+            border-collapse: collapse;
+            background-color: #e0f7fa;
+        }
+
+        th, td {
+            border: 1px solid #00796b; 
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #00796b; 
+            color: white; 
+        }
+
+        td {
+            background-color: #b2dfdb; 
+        }
+
+        
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <title>Administrator panel</title>
+</head>
+
+<body>
+
+
+    <div ng-app="app" ng-controller="TodoController">
+
+        <table>
+            <thead><tr><th>index_server</th><th>task_id</th><th>number</th><th>power</th><th>result</th><th>progress</th></tr></thead>
+            <tbody>
+                <tr ng-repeat="x in myData">
+                    <td>{{ x.server_index}}</td>
+                    <td>{{ x.task_id}}</td>
+                    <td>{{ x.number}}</td>
+                    <td>{{ x.power}}</td>
+                    <td>
+                        {{ x.result}}
+                    </td>
+                    <td>{{ x.progress}}%</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+    </div>
+    <script>
+
+        var app = angular.module('app', []);
+        app.controller('TodoController', function ($scope, $http, $interval) {
+
+            $interval(updateData, 1000);
+
+            function updateData() {
+                $http.get("https://127.0.0.1:8000/servers").then(function (response) {
+                    $scope.myData = response.data;
+                });
+            }
+            $scope.stopCalls = function () {
+                $interval.cancel(interval);
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
